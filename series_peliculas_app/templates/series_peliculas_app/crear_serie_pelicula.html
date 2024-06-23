@@ -1,0 +1,41 @@
+{% extends 'series_peliculas_app/base.html' %}
+
+{% block content %}
+
+<h1>Registrar Serie o Película</h1>
+    <form method="POST" enctype="multipart/form-data" id="registroForm">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Guardar Registro" class="btn btn-primary mb-5 w-100">
+    </form>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var seriePeliculaField = document.getElementById('id_serie_o_pelicula');
+            var temporadasField = document.getElementById('id_temporadas');
+            var episodiosField = document.getElementById('id_episodios');
+            var finalizadaField = document.getElementById('id_finalizada');
+    
+            function toggleTemporadasEpisodios() {
+                if (seriePeliculaField.value === 'Serie') {
+                    temporadasField.disabled = false;
+                    episodiosField.disabled = false;
+                    finalizadaField.disabled = false;
+                } else {
+                    temporadasField.disabled = true;
+                    episodiosField.disabled = true;
+                    finalizadaField.disabled = true;
+                    temporadasField.value = '';  // Clear the value when disabled
+                    episodiosField.value = '';   // Clear the value when disabled
+                }
+            }
+    
+            toggleTemporadasEpisodios();  // Llamar la función al cargar la página
+    
+            seriePeliculaField.addEventListener('change', function() {
+                toggleTemporadasEpisodios();
+            });
+        });
+    </script>
+
+{% endblock %}

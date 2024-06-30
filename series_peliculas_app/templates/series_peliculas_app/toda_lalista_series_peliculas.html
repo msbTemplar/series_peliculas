@@ -4,7 +4,13 @@
 {% block content %}
   <div class="row">
     <div class="col col-8"><h1>la lista de series peliculas</h1></div>
-    <div class="col col-4"><h2 class="btn-primary text-center rounded text-warning">Usuario Conectado: {{name}}</h2></div>
+    <div class="col col-4"><h2 class="btn-primary text-center rounded text-warning">Usuario Conectado: 
+      {% if user.is_authenticated %}
+      {{name}}
+      {% else %}
+      No estas conectado
+      {% endif %}
+    </h2></div>
   </div>
   
   <!-- antes venue_list-->
@@ -12,24 +18,27 @@
   <table class="table table-striped table-hover table-bordered border-primary shadow rounded custom-table">
     <thead>
       <tr>
-        <th scope="col" class="text-center">Titulo Serie</th>
-        <th scope="col" class="text-center">Fecha Serie</th>
+        <th scope="col" class="text-center">Titulo</th>
+        <th scope="col" class="text-center">Año</th>
         <th scope="col" class="text-center">Nº Temporadas</th>
         <th scope="col" class="text-center">Nº Episodios</th>
 
-        <th scope="col" class="text-center">Plataforma Serie</th>
-        <th scope="col" class="text-center">Description Serie</th>
-        <th scope="col" class="text-center">Género Serie</th>
-        <th scope="col" class="text-center">Puntuacion Serie</th>
+        <th scope="col" class="text-center">Plataforma</th>
+        <th scope="col" class="text-center">Description</th>
+        <th scope="col" class="text-center">Género</th>
+        <th scope="col" class="text-center">Puntuacion</th>
         <th scope="col" class="text-center">Finalizada?</th>
 
-        <th scope="col" class="text-center">Comentarios Serie</th>
-        <th scope="col" class="text-center">Imagen Serie</th>
+        <th scope="col" class="text-center">Comentarios</th>
+        <th scope="col" class="text-center">Imagen</th>
         <th scope="col" class="text-center">Serie/Pelicula</th>
         <th scope="col" class="text-center">Recomendado Por</th>
-
+        {% if user.is_authenticated %}
         <th scope="col" class="text-center">Actualizar</th>
-        <th scope="col" class="text-center">Eliminar</th>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <th scope="col" class="text-center">{% if user.is_authenticated %}Eliminar{% endif %}</th>
+        {% endif %}
       </tr>
     </thead>
     <tbody>
@@ -41,7 +50,12 @@
         <td>{{la_serie_pelicula.episodios }}</td>
 
         <td class="text-wrap" style="max-width: 150px;">{{la_serie_pelicula.plataforma}}</td>
-        <td class="text-wrap" style="max-width: 150px;">{{la_serie_pelicula.description}}</td>
+        <!--<td class="text-wrap" style="max-width: 150px;">{{la_serie_pelicula.description}}</td>-->
+        <td>
+          <a class="btn btn-primary" href="#" onclick="verDescripcion('{{ la_serie_pelicula.id }}','{{la_serie_pelicula.description}}','{{la_serie_pelicula.serie_pelicula_imagen.url}}')">Ver Descripcion 
+            {{ la_serie_pelicula.id }}</a>
+        </td>
+        
         <td class="text-wrap" style="max-width: 150px;">{{la_serie_pelicula.genero}}</td>
         
         <!--<td>{{la_serie_pelicula.puntuacion}}</td>-->
@@ -55,14 +69,18 @@
        <!-- <td>{{la_serie_pelicula.finalizada}}</td>-->
         <td>
           {% if la_serie_pelicula.finalizada %}
-              Esta activa
-          {% else %}
               Finalizada
+          {% else %}
+              Esta activa
           {% endif %}
       </td>
       
-        <td class="text-wrap" style="max-width: 150px;">{{la_serie_pelicula.comentarios}}</td>
+        <!--<td class="text-wrap" style="max-width: 150px;">{{la_serie_pelicula.comentarios}}</td>-->
         <td>
+          <a class="btn btn-warning" href="#" onclick="verComentarios('{{ la_serie_pelicula.id }}','{{la_serie_pelicula.comentarios}}','{{la_serie_pelicula.serie_pelicula_imagen.url}}')">Ver Comentarios 
+            {{ la_serie_pelicula.id }}</a>
+        </td>
+        <td style="text-align: center;">
           {% if la_serie_pelicula.serie_pelicula_imagen %} 
          
           <img src="{{la_serie_pelicula.serie_pelicula_imagen.url}}" width="50%" alt="" />
@@ -71,23 +89,27 @@
         
         <td>{{la_serie_pelicula.serie_o_pelicula}}</td>
         <td class="text-wrap" style="max-width: 150px;">{{la_serie_pelicula.recomendado_por}}</td>
-        
-        <td><a class="btn btn-success" href="{% url 'actualizar_serie_pelicula' la_serie_pelicula.id %}">Actualizar {{la_serie_pelicula.id}}</a></td>
-        <!--<td><a class="btn btn-danger" href="{% url 'eliminar_serie_pelicula' la_serie_pelicula.id %}">Eliminar {{la_serie_pelicula.id}}</a></td>-->
+        {% if user.is_authenticated %}
         <td>
+          
+          <a class="btn btn-success" href="{% url 'actualizar_serie_pelicula' la_serie_pelicula.id %}">Actualizar {{la_serie_pelicula.id}}</a>
+          
+        </td>
+        {% endif %}
+        <!--<td><a class="btn btn-danger" href="{% url 'eliminar_serie_pelicula' la_serie_pelicula.id %}">Eliminar {{la_serie_pelicula.id}}</a></td>-->
+        {% if user.is_authenticated %}
+        <td>
+          
           <a class="btn btn-danger" href="#" onclick="confirmDelete('{{ la_serie_pelicula.id }}')">Eliminar 
             {{ la_serie_pelicula.id }}</a>
-      
+          
       </td>
-      
+      {% endif %}
       </tr>
       {% endfor %}
       
     </tbody>
-  </table>
-  
- 
-  
+  </table> 
   <br /><br />
   <br />
   {% if todas_series_peliculas.has_previous %}

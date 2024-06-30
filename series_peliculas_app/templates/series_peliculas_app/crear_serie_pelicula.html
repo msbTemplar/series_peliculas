@@ -8,25 +8,53 @@
         {{ form.as_p }}
         <input type="submit" value="Guardar Registro" class="btn btn-primary mb-5 w-100">
     </form>
+    <style>
+        /* Estilos para el borde y el fondo del input */
+        .input-invalid {
+            border: 1px solid #dc3545;  /* Borde rojo */
+            background-color: #f8d7da;  /* Fondo rojo claro */
+        }
     
+        .input-valid {
+            border: 1px solid #28a745;  /* Borde verde */
+            background-color: #d4edda;  /* Fondo verde claro */
+        }
+    </style>
+  
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var seriePeliculaField = document.getElementById('id_serie_o_pelicula');
             var temporadasField = document.getElementById('id_temporadas');
             var episodiosField = document.getElementById('id_episodios');
             var finalizadaField = document.getElementById('id_finalizada');
+            var fechaSerieInput = document.getElementById('id_fecha_serie');
+            var labelTemporadas = document.querySelector('label[for="id_temporadas"]');
+            var labelEpisodios = document.querySelector('label[for="id_episodios"]');
+            var labelFinalizada = document.querySelector('label[for="id_finalizada"]');
     
             function toggleTemporadasEpisodios() {
                 if (seriePeliculaField.value === 'Serie') {
                     temporadasField.disabled = false;
                     episodiosField.disabled = false;
                     finalizadaField.disabled = false;
+                    temporadasField.style.display = 'block';  // Mostrar campos
+                    episodiosField.style.display = 'block';
+                    finalizadaField.style.display = 'block';
+                    labelFinalizada.style.display = 'block';
+                    labelTemporadas.style.display = 'block';  // Mostrar labels
+                    labelEpisodios.style.display = 'block';
                 } else {
                     temporadasField.disabled = true;
                     episodiosField.disabled = true;
                     finalizadaField.disabled = true;
                     temporadasField.value = '';  // Clear the value when disabled
                     episodiosField.value = '';   // Clear the value when disabled
+                    temporadasField.style.display = 'none';  // Ocultar campos
+                    episodiosField.style.display = 'none';
+                    labelTemporadas.style.display = 'none';  // Ocultar labels
+                    labelEpisodios.style.display = 'none';
+                    finalizadaField.style.display = 'none';
+                    labelFinalizada.style.display = 'none';
                 }
             }
     
@@ -35,7 +63,23 @@
             seriePeliculaField.addEventListener('change', function() {
                 toggleTemporadasEpisodios();
             });
-        });
-    </script>
 
+            fechaSerieInput.addEventListener('input', function () {
+                var fechaSerieValue = parseInt(fechaSerieInput.value);
+                if (fechaSerieValue < 1900 || fechaSerieValue > 2100) {
+                    fechaSerieInput.classList.remove('input-valid');
+                    fechaSerieInput.classList.add('input-invalid');
+                    fechaSerieInput.classList.add('is-invalid');
+                } else {
+                    fechaSerieInput.classList.remove('input-invalid');
+                    fechaSerieInput.classList.add('input-valid');
+                    fechaSerieInput.classList.remove('is-invalid');
+                }
+            });
+        });
+        
+
+        
+    </script>
+    
 {% endblock %}

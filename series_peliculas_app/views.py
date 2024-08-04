@@ -48,7 +48,7 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
 
 
 def login_user(request):
-
+    
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
